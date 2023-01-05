@@ -13,14 +13,14 @@ class DOMHepler {
 }
 
 class Component {
-  constructor (hostElementId, insetBefore = false) {
+  constructor (hostElementId, insertBefore = false) {
     if(hostElementId) {
       this.hostElement = document.getElementById(hostElementId);
     }else {
       this.hostElement = document.body;
     }
 
-    this.insetBefore = insetBefore;
+    this.insertBefore = insertBefore;
   }
 
   detach() {
@@ -38,8 +38,8 @@ class Component {
 
 class Tooltip extends Component{
 
-  constructor (closeNotifierFunction, text) {
-    super();
+  constructor (closeNotifierFunction, text, positonId) {
+    super(positonId);
     this.closeNotifier = closeNotifierFunction;
     this.text = text;
     this.create();
@@ -53,8 +53,12 @@ class Tooltip extends Component{
   create() {
     const tooltipElement = document.createElement('div');
     tooltipElement.className = "card"; 
-    tooltipElement.textContent = this.text;
-    tooltipElement.addEventListener('click', this.detach);
+    const tooltipTemplate = document.getElementById('tooltip');
+    const tooltipBody = document.importNode(tooltipTemplate.content, true);
+    tooltipBody.querySelector('p').textContent = this.text;
+    tooltipElement.append(tooltipBody);
+
+    tooltipElement.addEventListener('click', this.closeTooltip);
     this.element = tooltipElement;
   }
 }
@@ -78,7 +82,7 @@ class ProjectItem {
 
     const tooltip = new Tooltip(()=> {
       this.hasActiveTooltip = false;
-    }, tooltipText);
+    }, tooltipText, this.id);
 
     tooltip.attach();
     this.hasActiveTooltip = true;

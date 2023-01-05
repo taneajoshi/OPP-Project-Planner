@@ -11,10 +11,36 @@ class DOMHepler {
     }
 }
 
-class Tooltip {
+class Component {
+  constructor (hostElementId, insetBefore = false) {
+    if(hostElementId) {
+      this.hostElement = document.getElementById(hostElementId);
+    }else {
+      this.hostElement = document.body;
+    }
+
+    this.insetBefore = insetBefore;
+  }
+
+  detach() {
+    if(this.element) {
+      this.element.remove();
+       //If we need the older browser support, then we need to do this instead - >
+       // this.element.parentElement.removeChild(this.element);
+    }
+  }
+
+  attach() {
+    this.hostElement.insertAdjacentElement(this.insetBefore ? 'afterbegin' : 'beforeend' ,this.element);
+  }  
+}
+
+class Tooltip extends Component{
 
   constructor (closeNotifierFunction) {
+    super();
     this.closeNotifier = closeNotifierFunction;
+    this.create();
   }
 
   closeTooltip = () => {
@@ -22,20 +48,13 @@ class Tooltip {
     this.closeNotifier();
   }
 
-  detach() {
-    this.element.remove();
-    //If we need the older browser support, then we need to do this instead - >
-    // this.element.parentElement.removeChild(this.element);
-  }
-
-  attach() {
+  create() {
     const tooltipElement = document.createElement('div');
     tooltipElement.className = "card"; 
     tooltipElement.textContent = "Dummy tooltip content";
     tooltipElement.addEventListener('click', this.detach);
     this.element = tooltipElement;
-    document.body.append(tooltipElement);
-  }  
+  }
 }
 
 class ProjectItem {

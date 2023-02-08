@@ -154,6 +154,15 @@ class ProjectList {
         list.parentElement.classList.remove('droppable');
       }
     })
+
+    list.addEventListener('drop', e => {
+      const prjId = e.dataTransfer.getData('text/plain');
+      if(!this.projects.find(p => p.id === prjId)) {
+        document.getElementById(prjId).querySelector('button:last-of-type').click(); 
+        list.parentElement.classList.remove('droppable');
+      } 
+    })
+
   }
 
   addProject(project) { 

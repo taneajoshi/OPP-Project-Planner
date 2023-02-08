@@ -138,3 +138,7 @@
     top: 100%;
     z-index: 9;
   } 
+
+  .droppable {
+    background-color: #ffe0ec;
+  }

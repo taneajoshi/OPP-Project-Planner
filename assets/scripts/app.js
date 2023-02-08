@@ -70,6 +70,7 @@ class ProjectItem {
     this.updateProjectListsHandler = updateProjectListsFunction;
     this.connectMoreInfoButton();
     this.connectSwitchButton(type);
+    this.connectDrag();
   }
 
   showMoreInfoHandler() {
@@ -126,10 +127,33 @@ class ProjectList {
         new ProjectItem(prjItem.id, this.switchProject.bind(this), this.type)
       );
     }
+    this.connectDroppable();
   }
 
   setSwitchHandlerFunction(switchHandlerFunction) {
     this.switchHandler = switchHandlerFunction;
+  }
+
+  connectDroppable() {
+    const list = document.querySelector(`#${this.type}-projects ul`);
+    list.addEventListener('dragenter', e => {
+      //If we have multiple draggable items in the page then we can make sure if we are dragging the correct element by doing this check.
+      if(e.dataTransfer.types[0] === 'text/plain') {
+        list.parentElement.classList.add('droppable');
+        e.preventDefault();
+      }
+    });
+    list.addEventListener('dragover', e => {
+      if(e.dataTransfer.types[0] === 'text/plain') {
+        e.preventDefault();
+      }
+    });
+
+    list.addEventListener('dragleave', e => {
+      if (e.relatedTarget.closest(`#${this.type}-projects ul`) !== list) {
+        list.parentElement.classList.remove('droppable');
+      }
+    })
   }
 
   addProject(project) { 
